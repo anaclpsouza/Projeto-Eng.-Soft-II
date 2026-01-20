@@ -1,5 +1,8 @@
 package br.edu.escola.swingapp.domain.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import br.edu.escola.swingapp.domain.model.ReportCard;
 
 public class CalculusAverageService {
@@ -27,7 +30,12 @@ public class CalculusAverageService {
         if (count == 0) {
             return 0.0;
         }
-        return sum / count;
+        
+        Double average = sum / count;
+        BigDecimal bd = BigDecimal.valueOf(average);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+
+        return bd.doubleValue();
     }
 
     public String determineSituation(double average) {
