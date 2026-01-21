@@ -97,7 +97,7 @@ Essa separação facilita a aplicação dos princípios SOLID e a manutenção d
 ## 6. Estratégia de Versionamento (Git/GitHub)
 
 - Repositório hospedado em:  
-  `https://github.com/<seu-usuario>/<seu-repositorio>`
+  `https://github.com/anaclpsouza/Projeto-Eng.-Soft-II`
 
 ### 6.1. Branches
 

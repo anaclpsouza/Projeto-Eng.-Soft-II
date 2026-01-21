@@ -25,7 +25,6 @@ public class StudentRepositoryFileImpl implements StudentRepository {
     public void save(Student student) {
         List<Student> students = findAll();
 
-        // Update if already exists with same registration
         students.removeIf(s -> s.getRegistration().equals(student.getRegistration()));
 
         students.add(student);
