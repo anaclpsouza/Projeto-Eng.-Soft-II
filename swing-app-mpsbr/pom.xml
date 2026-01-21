@@ -23,6 +23,12 @@
       <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
+
+     <dependency>
+        <groupId>com.formdev</groupId>
+        <artifactId>flatlaf</artifactId>
+        <version>3.3</version> 
+    </dependency>
   </dependencies>
 
   <build>
@@ -58,7 +64,7 @@
         </executions>
       </plugin>
 
-      <!-- (Opcional) Plugin do Checkstyle -->
+      <!-- Plugin do Checkstyle -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

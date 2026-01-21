@@ -37,7 +37,7 @@ public class StudentFormDialog extends JDialog {
     private void configureWindow() {
         setSize(400, 200);
         setLocationRelativeTo(getOwner());
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(0, 0));
     }
 
     private void initializeComponents() {
