@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 public class App {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // Infra
+            // Infra    
             FileStorage fileStorage = new FileStorage("Students.csv");
             StudentRepository studentRepository = new StudentRepositoryFileImpl(fileStorage);
 
