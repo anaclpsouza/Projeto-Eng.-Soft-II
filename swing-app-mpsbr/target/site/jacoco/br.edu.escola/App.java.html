@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swing-app-mpsbr</a> &gt; <a href="index.source.html" class="el_package">br.edu.escola</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package br.edu.escola;
+
+import br.edu.escola.swingapp.application.ReportCardUseCase;
+import br.edu.escola.swingapp.application.StudentUseCase;
+import br.edu.escola.swingapp.domain.service.CalculusAverageService;
+import br.edu.escola.swingapp.domain.service.StudentValidator;
+import br.edu.escola.swingapp.infra.repository.FileStorage;
+import br.edu.escola.swingapp.infra.repository.StudentRepository;
+import br.edu.escola.swingapp.infra.repository.StudentRepositoryFileImpl;
+import br.edu.escola.swingapp.ui.MainFrame;
+
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatLaf;
+
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import java.util.HashMap;
+import java.util.Map;
+
+<span class="nc" id="L21">public class App {</span>
+
+    public static void main(String[] args) {
+<span class="nc" id="L24">        SwingUtilities.invokeLater(() -&gt; {</span>
+<span class="nc" id="L25">            configureLookAndFeel();</span>
+
+            // Infra
+<span class="nc" id="L28">            FileStorage fileStorage = new FileStorage(&quot;students.csv&quot;);</span>
+<span class="nc" id="L29">            StudentRepository studentRepository = new StudentRepositoryFileImpl(fileStorage);</span>
+
+            // Domain
+<span class="nc" id="L32">            StudentValidator studentValidator = new StudentValidator();</span>
+<span class="nc" id="L33">            CalculusAverageService calculusAverageService = new CalculusAverageService();</span>
+
+            // Application
+<span class="nc" id="L36">            StudentUseCase studentUseCase = new StudentUseCase(studentRepository, studentValidator);</span>
+<span class="nc" id="L37">            ReportCardUseCase reportCardUseCase = new ReportCardUseCase(studentRepository, calculusAverageService);</span>
+
+            // UI
+<span class="nc" id="L40">            MainFrame mainFrame = new MainFrame(studentUseCase, reportCardUseCase);</span>
+<span class="nc" id="L41">            mainFrame.setVisible(true);</span>
+<span class="nc" id="L42">        });</span>
+<span class="nc" id="L43">    }</span>
+
+    private static void configureLookAndFeel() {
+<span class="nc" id="L46">        Map&lt;String, String&gt; defaults = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L47">        defaults.put(&quot;Component.focusWidth&quot;, &quot;1&quot;);</span>
+<span class="nc" id="L48">        defaults.put(&quot;Button.arc&quot;, &quot;12&quot;);</span>
+<span class="nc" id="L49">        defaults.put(&quot;Component.arc&quot;, &quot;12&quot;);</span>
+<span class="nc" id="L50">        defaults.put(&quot;Panel.background&quot;, &quot;#F5F5F5&quot;);</span>
+
+<span class="nc" id="L52">        FlatLaf.setGlobalExtraDefaults(defaults);</span>
+
+<span class="nc" id="L54">        FlatLightLaf.setup();</span>
+
+<span class="nc" id="L56">        UIManager.put(&quot;Component.focusColor&quot;, new java.awt.Color(33, 150, 243));</span>
+<span class="nc" id="L57">        UIManager.put(&quot;Button.arc&quot;, 12);</span>
+<span class="nc" id="L58">        UIManager.put(&quot;TextComponent.arc&quot;, 12);</span>
+<span class="nc" id="L59">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CalculusAverageService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swing-app-mpsbr</a> &gt; <a href="index.source.html" class="el_package">br.edu.escola.swingapp.domain.service</a> &gt; <span class="el_source">CalculusAverageService.java</span></div><h1>CalculusAverageService.java</h1><pre class="source lang-java linenums">package br.edu.escola.swingapp.domain.service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import br.edu.escola.swingapp.domain.model.ReportCard;
+
+<span class="nc" id="L8">public class CalculusAverageService {</span>
+    public double calculateAverage(ReportCard reportCard) {
+<span class="nc" id="L10">        double sum = 0.0;</span>
+<span class="nc" id="L11">        int count = 0;</span>
+
+<span class="nc bnc" id="L13" title="All 2 branches missed.">        if (reportCard.getExam1Grade() != null) {</span>
+<span class="nc" id="L14">            sum += reportCard.getExam1Grade();</span>
+<span class="nc" id="L15">            count++;</span>
+        }
+<span class="nc bnc" id="L17" title="All 2 branches missed.">        if (reportCard.getExam2Grade() != null) {</span>
+<span class="nc" id="L18">            sum += reportCard.getExam2Grade();</span>
+<span class="nc" id="L19">            count++;</span>
+        }
+<span class="nc bnc" id="L21" title="All 2 branches missed.">        if (reportCard.getAssignmentGrade() != null) {</span>
+<span class="nc" id="L22">            sum += reportCard.getAssignmentGrade();</span>
+<span class="nc" id="L23">            count++;</span>
+        }
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        if (reportCard.getProjectGrade() != null) {</span>
+<span class="nc" id="L26">            sum += reportCard.getProjectGrade();</span>
+<span class="nc" id="L27">            count++;</span>
+        }
+
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if (count == 0) {</span>
+<span class="nc" id="L31">            return 0.0;</span>
+        }
+        
+<span class="nc" id="L34">        Double average = sum / count;</span>
+<span class="nc" id="L35">        BigDecimal bd = BigDecimal.valueOf(average);</span>
+<span class="nc" id="L36">        bd = bd.setScale(2, RoundingMode.HALF_UP);</span>
+
+<span class="nc" id="L38">        return bd.doubleValue();</span>
+    }
+
+    public String determineSituation(double average) {
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (average &gt;= 7.0) {</span>
+<span class="nc" id="L43">            return &quot;Aprovado&quot;;</span>
+        }
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        if (average &gt;= 5.0) {</span>
+<span class="nc" id="L46">            return &quot;Recuperação&quot;;</span>
+        }
+<span class="nc" id="L48">        return &quot;Reprovado&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

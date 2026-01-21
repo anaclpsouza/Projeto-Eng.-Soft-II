@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainFrame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swing-app-mpsbr</a> &gt; <a href="index.source.html" class="el_package">br.edu.escola.swingapp.ui</a> &gt; <span class="el_source">MainFrame.java</span></div><h1>MainFrame.java</h1><pre class="source lang-java linenums">package br.edu.escola.swingapp.ui;
+
+import br.edu.escola.swingapp.application.ReportCardUseCase;
+import br.edu.escola.swingapp.application.StudentUseCase;
+import br.edu.escola.swingapp.domain.model.Student;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+
+public class MainFrame extends JFrame {
+
+    private final StudentUseCase studentUseCase;
+    private final ReportCardUseCase reportCardUseCase;
+
+    private StudentListPanel studentListPanel;
+
+    public MainFrame(StudentUseCase studentUseCase, ReportCardUseCase reportCardUseCase) {
+<span class="nc" id="L28">        super(&quot;Gerenciador de Notas Escolares&quot;);</span>
+<span class="nc" id="L29">        this.studentUseCase = studentUseCase;</span>
+<span class="nc" id="L30">        this.reportCardUseCase = reportCardUseCase;</span>
+
+<span class="nc" id="L32">        configureWindow();</span>
+<span class="nc" id="L33">        initializeMenuBar();</span>
+<span class="nc" id="L34">        initializeComponents();</span>
+<span class="nc" id="L35">        loadStudents();</span>
+<span class="nc" id="L36">    }</span>
+
+    private void configureWindow() {
+<span class="nc" id="L39">        setSize(900, 600);</span>
+<span class="nc" id="L40">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L41">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="nc" id="L42">        setLayout(new BorderLayout(0, 0));</span>
+<span class="nc" id="L43">    }</span>
+
+    private void initializeMenuBar() {
+<span class="nc" id="L46">        JMenuBar menuBar = new JMenuBar();</span>
+
+<span class="nc" id="L48">        JMenu studentMenu = new JMenu(&quot;Aluno&quot;);</span>
+<span class="nc" id="L49">        JMenuItem miNewStudent = new JMenuItem(&quot;Novo Aluno&quot;);</span>
+<span class="nc" id="L50">        miNewStudent.addActionListener(e -&gt; openStudentCreateForm());</span>
+
+<span class="nc" id="L52">        JMenuItem miEditStudent = new JMenuItem(&quot;Editar Aluno&quot;);</span>
+<span class="nc" id="L53">        miEditStudent.addActionListener(e -&gt; openStudentEditForm());</span>
+
+<span class="nc" id="L55">        JMenuItem miRemoveStudent = new JMenuItem(&quot;Remover Aluno&quot;);</span>
+<span class="nc" id="L56">        miRemoveStudent.addActionListener(e -&gt; removeSelectedStudent());</span>
+
+<span class="nc" id="L58">        studentMenu.add(miNewStudent);</span>
+<span class="nc" id="L59">        studentMenu.add(miEditStudent);</span>
+<span class="nc" id="L60">        studentMenu.add(miRemoveStudent);</span>
+
+<span class="nc" id="L62">        JMenu gradesMenu = new JMenu(&quot;Notas&quot;);</span>
+<span class="nc" id="L63">        JMenuItem miEditGrades = new JMenuItem(&quot;Ver/Editar Notas&quot;);</span>
+<span class="nc" id="L64">        miEditGrades.addActionListener(e -&gt; openGradesForm());</span>
+
+<span class="nc" id="L66">        JMenuItem miGradeBook = new JMenuItem(&quot;Diário de Classe&quot;);</span>
+<span class="nc" id="L67">        miGradeBook.addActionListener(e -&gt; openGradeBook());</span>
+
+<span class="nc" id="L69">        gradesMenu.add(miEditGrades);</span>
+<span class="nc" id="L70">        gradesMenu.add(miGradeBook);</span>
+
+<span class="nc" id="L72">        menuBar.add(studentMenu);</span>
+<span class="nc" id="L73">        menuBar.add(gradesMenu);</span>
+
+<span class="nc" id="L75">        setJMenuBar(menuBar);</span>
+<span class="nc" id="L76">    }</span>
+
+    private void initializeComponents() {
+        // Header com título
+<span class="nc" id="L80">        JPanel headerPanel = new JPanel(new BorderLayout());</span>
+<span class="nc" id="L81">        headerPanel.setBorder(new EmptyBorder(10, 16, 10, 16));</span>
+
+<span class="nc" id="L83">        JLabel titleLabel = new JLabel(&quot; Alunos Cadastrados no Sistema&quot;);</span>
+<span class="nc" id="L84">        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 20f));</span>
+
+<span class="nc" id="L86">        JLabel subtitleLabel = new JLabel(&quot; Gerencie matrículas, notas e situação escolar de forma simples.&quot;);</span>
+<span class="nc" id="L87">        subtitleLabel.setForeground(new Color(100, 100, 100));</span>
+<span class="nc" id="L88">        subtitleLabel.setFont(subtitleLabel.getFont().deriveFont(Font.PLAIN, 12f));</span>
+
+<span class="nc" id="L90">        JPanel titlePanel = new JPanel(new BorderLayout());</span>
+<span class="nc" id="L91">        titlePanel.setOpaque(false);</span>
+<span class="nc" id="L92">        titlePanel.add(titleLabel, BorderLayout.NORTH);</span>
+<span class="nc" id="L93">        titlePanel.add(subtitleLabel, BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L95">        headerPanel.add(titlePanel, BorderLayout.WEST);</span>
+
+<span class="nc" id="L97">        add(headerPanel, BorderLayout.NORTH);</span>
+
+        // Painel central com a tabela de alunos
+<span class="nc" id="L100">        studentListPanel = new StudentListPanel();</span>
+<span class="nc" id="L101">        studentListPanel.setBorder(new EmptyBorder(10, 10, 0, 10));</span>
+<span class="nc" id="L102">        add(studentListPanel, BorderLayout.CENTER);</span>
+
+        // Painel de ações na parte inferior
+<span class="nc" id="L105">        JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));</span>
+<span class="nc" id="L106">        actionsPanel.setBorder(new EmptyBorder(5, 10, 10, 10));</span>
+
+<span class="nc" id="L108">        JButton btnNewStudent = new JButton(&quot;Novo Aluno&quot;);</span>
+<span class="nc" id="L109">        JButton btnEditStudent = new JButton(&quot;Editar&quot;);</span>
+<span class="nc" id="L110">        JButton btnViewGrades = new JButton(&quot;Ver/Editar Notas&quot;);</span>
+<span class="nc" id="L111">        JButton btnRemoveStudent = new JButton(&quot;Remover&quot;);</span>
+<span class="nc" id="L112">        JButton btnGradeBook = new JButton(&quot;Diário de Classe&quot;);</span>
+
+<span class="nc" id="L114">        stylePrimaryButton(btnNewStudent);</span>
+<span class="nc" id="L115">        styleSecondaryButton(btnEditStudent);</span>
+<span class="nc" id="L116">        styleSecondaryButton(btnViewGrades);</span>
+<span class="nc" id="L117">        styleDangerButton(btnRemoveStudent);</span>
+
+<span class="nc" id="L119">        stylePrimaryButton(btnGradeBook);</span>
+<span class="nc" id="L120">        btnGradeBook.setText(&quot;📘 Diário de Classe&quot;);</span>
+
+<span class="nc" id="L122">        btnNewStudent.addActionListener(e -&gt; openStudentCreateForm());</span>
+<span class="nc" id="L123">        btnEditStudent.addActionListener(e -&gt; openStudentEditForm());</span>
+<span class="nc" id="L124">        btnViewGrades.addActionListener(e -&gt; openGradesForm());</span>
+<span class="nc" id="L125">        btnRemoveStudent.addActionListener(e -&gt; removeSelectedStudent());</span>
+<span class="nc" id="L126">        btnGradeBook.addActionListener(e -&gt; openGradeBook());</span>
+
+<span class="nc" id="L128">        actionsPanel.add(btnNewStudent);</span>
+<span class="nc" id="L129">        actionsPanel.add(btnEditStudent);</span>
+<span class="nc" id="L130">        actionsPanel.add(btnViewGrades);</span>
+<span class="nc" id="L131">        actionsPanel.add(btnRemoveStudent);</span>
+
+<span class="nc" id="L133">        actionsPanel.add(new javax.swing.JSeparator(javax.swing.SwingConstants.VERTICAL));</span>
+<span class="nc" id="L134">        actionsPanel.add(btnGradeBook);</span>
+
+<span class="nc" id="L136">        add(actionsPanel, BorderLayout.SOUTH);</span>
+<span class="nc" id="L137">    }</span>
+
+    private void stylePrimaryButton(JButton button) {
+<span class="nc" id="L140">        button.putClientProperty(&quot;JButton.buttonType&quot;, &quot;roundRect&quot;);</span>
+<span class="nc" id="L141">        button.setBackground(new Color(33, 150, 243));</span>
+<span class="nc" id="L142">        button.setForeground(Color.WHITE);</span>
+<span class="nc" id="L143">        button.setFont(button.getFont().deriveFont(Font.BOLD));</span>
+<span class="nc" id="L144">    }</span>
+
+    private void styleSecondaryButton(JButton button) {
+<span class="nc" id="L147">        button.putClientProperty(&quot;JButton.buttonType&quot;, &quot;roundRect&quot;);</span>
+<span class="nc" id="L148">        button.setForeground(new Color(33, 33, 33));</span>
+<span class="nc" id="L149">    }</span>
+
+    private void styleDangerButton(JButton button) {
+<span class="nc" id="L152">        button.putClientProperty(&quot;JButton.buttonType&quot;, &quot;roundRect&quot;);</span>
+<span class="nc" id="L153">        button.setBackground(new Color(244, 67, 54));</span>
+<span class="nc" id="L154">        button.setForeground(Color.WHITE);</span>
+<span class="nc" id="L155">        button.setFont(button.getFont().deriveFont(Font.BOLD));</span>
+<span class="nc" id="L156">    }</span>
+
+    private void loadStudents() {
+<span class="nc" id="L159">        studentListPanel.loadStudents(studentUseCase.listAll());</span>
+<span class="nc" id="L160">    }</span>
+
+    private void openStudentCreateForm() {
+<span class="nc" id="L163">        StudentFormDialog dialog = new StudentFormDialog(this, studentUseCase, null);</span>
+<span class="nc" id="L164">        dialog.setVisible(true);</span>
+<span class="nc" id="L165">        loadStudents();</span>
+<span class="nc" id="L166">    }</span>
+
+    private void openStudentEditForm() {
+<span class="nc" id="L169">        Student selectedStudent = studentListPanel.getSelectedStudent();</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">        if (selectedStudent == null) {</span>
+<span class="nc" id="L171">            studentListPanel.showSelectStudentMessage(this);</span>
+<span class="nc" id="L172">            return;</span>
+        }
+
+<span class="nc" id="L175">        var fullStudentOpt = studentUseCase.findByRegistration(selectedStudent.getRegistration());</span>
+<span class="nc" id="L176">        Student fullStudent = fullStudentOpt.orElse(selectedStudent);</span>
+
+<span class="nc" id="L178">        StudentFormDialog dialog = new StudentFormDialog(this, studentUseCase, fullStudent);</span>
+<span class="nc" id="L179">        dialog.setVisible(true);</span>
+<span class="nc" id="L180">        loadStudents();</span>
+<span class="nc" id="L181">    }</span>
+
+    private void removeSelectedStudent() {
+<span class="nc" id="L184">        Student selectedStudent = studentListPanel.getSelectedStudent();</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (selectedStudent == null) {</span>
+<span class="nc" id="L186">            studentListPanel.showSelectStudentMessage(this);</span>
+<span class="nc" id="L187">            return;</span>
+        }
+<span class="nc" id="L189">        studentListPanel.confirmAndRemoveStudent(this, studentUseCase, selectedStudent);</span>
+<span class="nc" id="L190">        loadStudents();</span>
+<span class="nc" id="L191">    }</span>
+
+    private void openGradesForm() {
+<span class="nc" id="L194">        Student selectedStudent = studentListPanel.getSelectedStudent();</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (selectedStudent == null) {</span>
+<span class="nc" id="L196">            studentListPanel.showSelectStudentMessage(this);</span>
+<span class="nc" id="L197">            return;</span>
+        }
+
+<span class="nc" id="L200">        var fullStudentOpt = studentUseCase.findByRegistration(selectedStudent.getRegistration());</span>
+<span class="nc" id="L201">        Student fullStudent = fullStudentOpt.orElse(selectedStudent);</span>
+
+<span class="nc" id="L203">        GradesFormDialog dialog = new GradesFormDialog(this, reportCardUseCase, fullStudent);</span>
+<span class="nc" id="L204">        dialog.setVisible(true);</span>
+<span class="nc" id="L205">        loadStudents();</span>
+<span class="nc" id="L206">    }</span>
+
+    private void openGradeBook() {
+<span class="nc" id="L209">        GradeBookDialog dialog = new GradeBookDialog(this, studentUseCase, reportCardUseCase);</span>
+<span class="nc" id="L210">        dialog.setVisible(true);</span>
+<span class="nc" id="L211">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
