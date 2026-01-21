@@ -5,16 +5,18 @@ import br.edu.escola.swingapp.application.StudentUseCase;
 import br.edu.escola.swingapp.domain.model.ReportCard;
 import br.edu.escola.swingapp.domain.model.Student;
 
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Frame;
 import java.util.List;
 
-public class GradeBookFrame extends JFrame {
+public class GradeBookDialog extends JDialog {
 
     private final StudentUseCase studentUseCase;
     private final ReportCardUseCase reportCardUseCase;
@@ -22,8 +24,10 @@ public class GradeBookFrame extends JFrame {
     private JTable table;
     private DefaultTableModel tableModel;
 
-    public GradeBookFrame(StudentUseCase studentUseCase, ReportCardUseCase reportCardUseCase) {
-        super("Diário de Classe");
+    public GradeBookDialog(Frame owner,
+                           StudentUseCase studentUseCase,
+                           ReportCardUseCase reportCardUseCase) {
+        super(owner, "Diário de Classe", true); // true = modal
         this.studentUseCase = studentUseCase;
         this.reportCardUseCase = reportCardUseCase;
 
@@ -34,8 +38,8 @@ public class GradeBookFrame extends JFrame {
 
     private void configureWindow() {
         setSize(900, 500);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+        setLocationRelativeTo(getOwner());
+        setLayout(new BorderLayout(0, 0));
     }
 
     private void initializeTable() {
@@ -54,12 +58,12 @@ public class GradeBookFrame extends JFrame {
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // diário só para visualização
+                return false;
             }
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex >= 2 && columnIndex <= 6) { // colunas de notas + média
+                if (columnIndex >= 2 && columnIndex <= 6) {
                     return Double.class;
                 }
                 return String.class;
@@ -67,9 +71,11 @@ public class GradeBookFrame extends JFrame {
         };
 
         table = new JTable(tableModel);
-        table.setRowHeight(25);
+        table.setRowHeight(26);
+        table.setFillsViewportHeight(true);
+        table.setShowGrid(true);
+        table.setGridColor(new Color(224, 224, 224));
 
-        // Renderer para colorir a coluna de situação
         DefaultTableCellRenderer statusRenderer = new DefaultTableCellRenderer() {
             @Override
             protected void setValue(Object value) {
@@ -96,6 +102,7 @@ public class GradeBookFrame extends JFrame {
         table.getColumnModel().getColumn(7).setCellRenderer(statusRenderer);
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(new EmptyBorder(10, 10, 10, 10));
         add(scrollPane, BorderLayout.CENTER);
     }
 
@@ -118,7 +125,6 @@ public class GradeBookFrame extends JFrame {
                 assignment = reportCard.getAssignmentGrade();
                 project = reportCard.getProjectGrade();
 
-                // Usa o use case para garantir regra única de cálculo
                 average = reportCardUseCase.getAverage(student.getRegistration());
                 situation = reportCardUseCase.getSituation(student.getRegistration());
             }
