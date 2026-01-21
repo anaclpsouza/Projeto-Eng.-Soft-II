@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swing-app-mpsbr</a> &gt; <a href="index.source.html" class="el_package">br.edu.escola</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package br.edu.escola;
+
+import br.edu.escola.swingapp.application.StudentUseCase;
+import br.edu.escola.swingapp.application.ReportCardUseCase;
+import br.edu.escola.swingapp.domain.service.StudentValidator;
+import br.edu.escola.swingapp.domain.service.CalculusAverageService;
+import br.edu.escola.swingapp.infra.repository.StudentRepository;
+import br.edu.escola.swingapp.infra.repository.StudentRepositoryFileImpl;
+import br.edu.escola.swingapp.infra.repository.FileStorage;
+import br.edu.escola.swingapp.ui.MainFrame;
+
+import javax.swing.SwingUtilities;
+
+<span class="nc" id="L14">public class App {</span>
+    public static void main(String[] args) {
+<span class="fc" id="L16">        SwingUtilities.invokeLater(() -&gt; {</span>
+            // Infra    
+<span class="fc" id="L18">            FileStorage fileStorage = new FileStorage(&quot;Students.csv&quot;);</span>
+<span class="fc" id="L19">            StudentRepository studentRepository = new StudentRepositoryFileImpl(fileStorage);</span>
+
+            // Domínio
+<span class="fc" id="L22">            StudentValidator studentValidator = new StudentValidator();</span>
+<span class="fc" id="L23">            CalculusAverageService calculusAverageService = new CalculusAverageService();</span>
+
+            // Aplicação
+<span class="fc" id="L26">            StudentUseCase studentUseCase = new StudentUseCase(studentRepository, studentValidator);</span>
+<span class="fc" id="L27">            ReportCardUseCase boletimUseCase = new ReportCardUseCase(studentRepository, calculusAverageService);</span>
+
+            // UI
+<span class="fc" id="L30">            MainFrame mainFrame = new MainFrame(studentUseCase, boletimUseCase);</span>
+<span class="fc" id="L31">            mainFrame.setVisible(true);</span>
+<span class="fc" id="L32">        });</span>
+<span class="fc" id="L33">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

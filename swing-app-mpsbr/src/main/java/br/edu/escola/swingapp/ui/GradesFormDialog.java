@@ -116,35 +116,21 @@ public class GradesFormDialog extends JDialog {
             double average = reportCardUseCase.getAverage(student.getRegistration());
             String situation = reportCardUseCase.getSituation(student.getRegistration());
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Notas salvas com sucesso.\nMédia: " + average + "\nSituação: " + situation,
-                    "Sucesso",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            showMessage("Notas salvas com sucesso.\nMédia: " + average + "\nSituação: " + situation,
+                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             dispose();
         } catch (NumberFormatException nfe) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Informe valores numéricos válidos para as notas.",
-                    "Erro de validação",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            showMessage("Informe valores numéricos válidos para as notas.",
+                    "Erro de validação", JOptionPane.ERROR_MESSAGE);
         } catch (IllegalArgumentException iae) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    iae.getMessage(),
-                    "Erro de validação",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            showMessage(iae.getMessage(), "Erro de validação", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Erro ao salvar notas:\n" + ex.getMessage(),
-                    "Erro",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            showMessage("Erro ao salvar notas:\n" + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    protected void showMessage(String message, String title, int messageType) {
+        JOptionPane.showMessageDialog(this, message, title, messageType);
     }
 
     private Double parseGrade(String value) {

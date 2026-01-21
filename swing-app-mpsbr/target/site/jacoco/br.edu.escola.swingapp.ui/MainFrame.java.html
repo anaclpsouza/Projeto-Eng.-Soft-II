@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainFrame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swing-app-mpsbr</a> &gt; <a href="index.source.html" class="el_package">br.edu.escola.swingapp.ui</a> &gt; <span class="el_source">MainFrame.java</span></div><h1>MainFrame.java</h1><pre class="source lang-java linenums">package br.edu.escola.swingapp.ui;
+
+import br.edu.escola.swingapp.application.StudentUseCase;
+import br.edu.escola.swingapp.application.ReportCardUseCase;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
+public class MainFrame extends JFrame {
+
+    private final StudentUseCase studentUseCase;
+    private final ReportCardUseCase reportCardUseCase;
+
+    private StudentListPanel studentListPanel;
+
+    public MainFrame(StudentUseCase studentUseCase, ReportCardUseCase reportCardUseCase) {
+<span class="fc" id="L24">        super(&quot;Gerenciador de Notas Escolares&quot;);</span>
+<span class="fc" id="L25">        this.studentUseCase = studentUseCase;</span>
+<span class="fc" id="L26">        this.reportCardUseCase = reportCardUseCase;</span>
+
+<span class="fc" id="L28">        configureWindow();</span>
+<span class="fc" id="L29">        initializeComponents();</span>
+<span class="fc" id="L30">        loadInitialData();</span>
+<span class="fc" id="L31">    }</span>
+
+    private void configureWindow() {
+<span class="fc" id="L34">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="fc" id="L35">        setSize(800, 600);</span>
+<span class="fc" id="L36">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L37">        setLayout(new BorderLayout());</span>
+<span class="fc" id="L38">    }</span>
+
+    private void initializeComponents() {
+        // Menu
+<span class="fc" id="L42">        setJMenuBar(createMenuBar());</span>
+
+        // Top button panel
+<span class="fc" id="L45">        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="fc" id="L46">        JButton btnRegister = new JButton(&quot;Cadastrar Aluno&quot;);</span>
+<span class="fc" id="L47">        JButton btnEdit = new JButton(&quot;Editar Aluno&quot;);</span>
+<span class="fc" id="L48">        JButton btnShowGrades = new JButton(&quot;Ver/Editar Notas&quot;);</span>
+<span class="fc" id="L49">        JButton btnDelete = new JButton(&quot;Remover Aluno&quot;);</span>
+
+<span class="pc" id="L51">        btnRegister.addActionListener(e -&gt; openStudentRegistrationForm());</span>
+<span class="pc" id="L52">        btnEdit.addActionListener(e -&gt; openStudentEditForm());</span>
+<span class="pc" id="L53">        btnShowGrades.addActionListener(e -&gt; openGradesForm());</span>
+<span class="pc" id="L54">        btnDelete.addActionListener(e -&gt; deleteSelectedStudent());</span>
+
+<span class="fc" id="L56">        topPanel.add(btnRegister);</span>
+<span class="fc" id="L57">        topPanel.add(btnEdit);</span>
+<span class="fc" id="L58">        topPanel.add(btnShowGrades);</span>
+<span class="fc" id="L59">        topPanel.add(btnDelete);</span>
+
+<span class="fc" id="L61">        add(topPanel, BorderLayout.NORTH);</span>
+
+        // Student list panel
+<span class="fc" id="L64">        studentListPanel = new StudentListPanel();</span>
+<span class="fc" id="L65">        JScrollPane scrollPane = new JScrollPane(studentListPanel);</span>
+<span class="fc" id="L66">        add(scrollPane, BorderLayout.CENTER);</span>
+<span class="fc" id="L67">    }</span>
+
+    private JMenuBar createMenuBar() {
+<span class="fc" id="L70">        JMenuBar menuBar = new JMenuBar();</span>
+
+<span class="fc" id="L72">        JMenu studentMenu = new JMenu(&quot;Aluno&quot;);</span>
+<span class="fc" id="L73">        JMenuItem miRegister = new JMenuItem(&quot;Cadastrar&quot;);</span>
+<span class="fc" id="L74">        JMenuItem miEdit = new JMenuItem(&quot;Editar&quot;);</span>
+<span class="fc" id="L75">        JMenuItem miDelete = new JMenuItem(&quot;Remover&quot;);</span>
+
+<span class="pc" id="L77">        miRegister.addActionListener(e -&gt; openStudentRegistrationForm());</span>
+<span class="pc" id="L78">        miEdit.addActionListener(e -&gt; openStudentEditForm());</span>
+<span class="pc" id="L79">        miDelete.addActionListener(e -&gt; deleteSelectedStudent());</span>
+
+<span class="fc" id="L81">        studentMenu.add(miRegister);</span>
+<span class="fc" id="L82">        studentMenu.add(miEdit);</span>
+<span class="fc" id="L83">        studentMenu.add(miDelete);</span>
+
+<span class="fc" id="L85">        JMenu gradesMenu = new JMenu(&quot;Notas&quot;);</span>
+<span class="fc" id="L86">        JMenuItem miShowGrades = new JMenuItem(&quot;Ver/Editar Notas&quot;);</span>
+<span class="pc" id="L87">        miShowGrades.addActionListener(e -&gt; openGradesForm());</span>
+
+<span class="fc" id="L89">        JMenuItem miGradeBook = new JMenuItem(&quot;Diário de Classe&quot;);</span>
+<span class="pc" id="L90">        miGradeBook.addActionListener(e -&gt; openGradeBook());</span>
+
+<span class="fc" id="L92">        gradesMenu.add(miShowGrades);</span>
+<span class="fc" id="L93">        gradesMenu.add(miGradeBook);</span>
+<span class="fc" id="L94">        menuBar.add(studentMenu);</span>
+<span class="fc" id="L95">        menuBar.add(gradesMenu);</span>
+
+<span class="fc" id="L97">        return menuBar;</span>
+    }
+
+    private void loadInitialData() {
+<span class="fc" id="L101">        studentListPanel.loadStudents(studentUseCase.listAll());</span>
+<span class="fc" id="L102">    }</span>
+
+    private void openStudentRegistrationForm() {
+<span class="nc" id="L105">        StudentFormDialog dialog = new StudentFormDialog(this, studentUseCase, null);</span>
+<span class="nc" id="L106">        dialog.setVisible(true);</span>
+<span class="nc" id="L107">        studentListPanel.loadStudents(studentUseCase.listAll());</span>
+<span class="nc" id="L108">    }</span>
+
+    private void openStudentEditForm() {
+<span class="nc" id="L111">        var selectedStudent = studentListPanel.getSelectedStudent();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (selectedStudent == null) {</span>
+<span class="nc" id="L113">            studentListPanel.showSelectStudentMessage(this);</span>
+<span class="nc" id="L114">            return;</span>
+        }
+<span class="nc" id="L116">        var fullStudentOpt = studentUseCase.findByRegistration(selectedStudent.getRegistration());</span>
+<span class="nc" id="L117">        var studentToEdit = fullStudentOpt.orElse(selectedStudent);</span>
+
+<span class="nc" id="L119">        StudentFormDialog dialog = new StudentFormDialog(this, studentUseCase, studentToEdit);</span>
+<span class="nc" id="L120">        dialog.setVisible(true);</span>
+
+<span class="nc" id="L122">        studentListPanel.loadStudents(studentUseCase.listAll());</span>
+<span class="nc" id="L123">    }</span>
+
+    private void openGradesForm() {
+<span class="nc" id="L126">        var selectedStudent = studentListPanel.getSelectedStudent();</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (selectedStudent == null) {</span>
+<span class="nc" id="L128">            studentListPanel.showSelectStudentMessage(this);</span>
+<span class="nc" id="L129">            return;</span>
+        }
+<span class="nc" id="L131">        var fullStudentOpt = studentUseCase.findByRegistration(selectedStudent.getRegistration());</span>
+<span class="nc" id="L132">        var fullStudent = fullStudentOpt.orElse(selectedStudent);</span>
+
+<span class="nc" id="L134">        GradesFormDialog dialog = new GradesFormDialog(this, reportCardUseCase, fullStudent);</span>
+<span class="nc" id="L135">        dialog.setVisible(true);</span>
+<span class="nc" id="L136">        studentListPanel.loadStudents(studentUseCase.listAll());</span>
+<span class="nc" id="L137">    }</span>
+
+    private void deleteSelectedStudent() {
+<span class="nc" id="L140">        var selectedStudent = studentListPanel.getSelectedStudent();</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (selectedStudent == null) {</span>
+<span class="nc" id="L142">            studentListPanel.showSelectStudentMessage(this);</span>
+<span class="nc" id="L143">            return;</span>
+        }
+<span class="nc" id="L145">        studentListPanel.confirmAndRemoveStudent(this, studentUseCase, selectedStudent);</span>
+<span class="nc" id="L146">        studentListPanel.loadStudents(studentUseCase.listAll());</span>
+<span class="nc" id="L147">    }</span>
+
+    private void openGradeBook() {
+<span class="nc" id="L150">        GradeBookFrame frame = new GradeBookFrame(studentUseCase, reportCardUseCase);</span>
+<span class="nc" id="L151">        frame.setVisible(true);</span>
+<span class="nc" id="L152">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

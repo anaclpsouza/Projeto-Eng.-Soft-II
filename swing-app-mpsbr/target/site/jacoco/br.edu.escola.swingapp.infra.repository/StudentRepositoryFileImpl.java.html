@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentRepositoryFileImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swing-app-mpsbr</a> &gt; <a href="index.source.html" class="el_package">br.edu.escola.swingapp.infra.repository</a> &gt; <span class="el_source">StudentRepositoryFileImpl.java</span></div><h1>StudentRepositoryFileImpl.java</h1><pre class="source lang-java linenums">package br.edu.escola.swingapp.infra.repository;
+
+import br.edu.escola.swingapp.domain.model.Student;
+import br.edu.escola.swingapp.domain.model.ReportCard;
+import br.edu.escola.swingapp.infra.repository.StudentRepository;
+import br.edu.escola.swingapp.infra.repository.FileStorage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * StudentRepository implementation that persists data in a CSV file,
+ * using FileStorage for file read/write.
+ *
+ * CSV format (per line):
+ *   registration;name;exam1Grade;exam2Grade;assignmentGrade;projectGrade
+ */
+public class StudentRepositoryFileImpl implements StudentRepository {
+
+    private final FileStorage fileStorage;
+
+<span class="fc" id="L23">    public StudentRepositoryFileImpl(FileStorage fileStorage) {</span>
+<span class="fc" id="L24">        this.fileStorage = fileStorage;</span>
+<span class="fc" id="L25">    }</span>
+
+    @Override
+    public void save(Student student) {
+<span class="fc" id="L29">        List&lt;Student&gt; students = findAll();</span>
+
+        // Update if already exists with same registration
+<span class="fc" id="L32">        students.removeIf(s -&gt; s.getRegistration().equals(student.getRegistration()));</span>
+
+<span class="fc" id="L34">        students.add(student);</span>
+
+<span class="fc" id="L36">        String csv = toCsv(students);</span>
+<span class="fc" id="L37">        fileStorage.writeAll(csv);</span>
+<span class="fc" id="L38">    }</span>
+
+    @Override
+    public List&lt;Student&gt; findAll() {
+<span class="fc" id="L42">        String content = fileStorage.readAll();</span>
+<span class="pc bpc" id="L43" title="1 of 4 branches missed.">        if (content == null || content.isBlank()) {</span>
+<span class="fc" id="L44">            return new ArrayList&lt;&gt;();</span>
+        }
+
+<span class="fc" id="L47">        List&lt;Student&gt; students = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L48">        String[] lines = content.split(&quot;\\R&quot;);</span>
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        for (String line : lines) {</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">            if (line.isBlank()) {</span>
+<span class="nc" id="L52">                continue;</span>
+            }
+<span class="fc" id="L54">            Student student = fromCsvLine(line);</span>
+<span class="fc" id="L55">            students.add(student);</span>
+        }
+
+<span class="fc" id="L58">        return students;</span>
+    }
+
+    @Override
+    public Optional&lt;Student&gt; findByRegistration(String registration) {
+<span class="fc" id="L63">        return findAll()</span>
+<span class="fc" id="L64">                .stream()</span>
+<span class="fc" id="L65">                .filter(s -&gt; s.getRegistration().equals(registration))</span>
+<span class="fc" id="L66">                .findFirst();</span>
+    }
+
+    @Override
+    public void deleteByRegistration(String registration) {
+<span class="fc" id="L71">        List&lt;Student&gt; students = findAll();</span>
+<span class="fc" id="L72">        boolean removed = students.removeIf(s -&gt; s.getRegistration().equals(registration));</span>
+
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (removed) {</span>
+<span class="fc" id="L75">            String csv = toCsv(students);</span>
+<span class="fc" id="L76">            fileStorage.writeAll(csv);</span>
+        }
+<span class="fc" id="L78">    }</span>
+
+    @Override
+    public boolean existsByRegistration(String registration) {
+<span class="nc" id="L82">        return findByRegistration(registration).isPresent();</span>
+    }
+
+    // ------------- CSV helpers -------------
+
+    private String toCsv(List&lt;Student&gt; students) {
+<span class="fc" id="L88">        StringBuilder sb = new StringBuilder();</span>
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (Student student : students) {</span>
+<span class="fc" id="L91">            sb.append(toCsvLine(student)).append(System.lineSeparator());</span>
+<span class="fc" id="L92">        }</span>
+
+<span class="fc" id="L94">        return sb.toString();</span>
+    }
+
+    private String toCsvLine(Student student) {
+<span class="fc" id="L98">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L99">        sb.append(escape(student.getRegistration())).append(&quot;;&quot;);</span>
+<span class="fc" id="L100">        sb.append(escape(student.getName())).append(&quot;;&quot;);</span>
+
+<span class="fc" id="L102">        ReportCard reportCard = student.getReportCard();</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">        if (reportCard != null) {</span>
+<span class="nc" id="L104">            sb.append(formatGrade(reportCard.getExam1Grade())).append(&quot;;&quot;);</span>
+<span class="nc" id="L105">            sb.append(formatGrade(reportCard.getExam2Grade())).append(&quot;;&quot;);</span>
+<span class="nc" id="L106">            sb.append(formatGrade(reportCard.getAssignmentGrade())).append(&quot;;&quot;);</span>
+<span class="nc" id="L107">            sb.append(formatGrade(reportCard.getProjectGrade()));</span>
+        } else {
+<span class="fc" id="L109">            sb.append(&quot;;;;&quot;).append(&quot;&quot;);</span>
+        }
+
+<span class="fc" id="L112">        return sb.toString();</span>
+    }
+
+    private Student fromCsvLine(String line) {
+<span class="fc" id="L116">        String[] parts = line.split(&quot;;&quot;, -1);</span>
+<span class="fc" id="L117">        String registration = unescape(getPart(parts, 0));</span>
+<span class="fc" id="L118">        String name = unescape(getPart(parts, 1));</span>
+
+<span class="fc" id="L120">        String sExam1 = getPart(parts, 2);</span>
+<span class="fc" id="L121">        String sExam2 = getPart(parts, 3);</span>
+<span class="fc" id="L122">        String sAssignment = getPart(parts, 4);</span>
+<span class="fc" id="L123">        String sProject = getPart(parts, 5);</span>
+
+<span class="fc" id="L125">        ReportCard reportCard = new ReportCard();</span>
+<span class="fc" id="L126">        reportCard.setExam1Grade(parseGrade(sExam1));</span>
+<span class="fc" id="L127">        reportCard.setExam2Grade(parseGrade(sExam2));</span>
+<span class="fc" id="L128">        reportCard.setAssignmentGrade(parseGrade(sAssignment));</span>
+<span class="fc" id="L129">        reportCard.setProjectGrade(parseGrade(sProject));</span>
+
+<span class="fc" id="L131">        Student student = new Student();</span>
+<span class="fc" id="L132">        student.setRegistration(registration);</span>
+<span class="fc" id="L133">        student.setName(name);</span>
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        if (reportCard.getExam1Grade() != null ||</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">            reportCard.getExam2Grade() != null ||</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">            reportCard.getAssignmentGrade() != null ||</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">            reportCard.getProjectGrade() != null) {</span>
+<span class="fc" id="L139">            student.setReportCard(reportCard);</span>
+        }
+
+<span class="fc" id="L142">        return student;</span>
+    }
+
+    private String getPart(String[] parts, int index) {
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        if (index &lt; parts.length) {</span>
+<span class="fc" id="L147">            return parts[index];</span>
+        }
+<span class="fc" id="L149">        return &quot;&quot;;</span>
+    }
+
+    private String escape(String value) {
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (value == null) {</span>
+<span class="nc" id="L154">            return &quot;&quot;;</span>
+        }
+<span class="fc" id="L156">        return value.replace(&quot;;&quot;, &quot;,&quot;);</span>
+    }
+
+    private String unescape(String value) {
+<span class="fc" id="L160">        return value;</span>
+    }
+
+    private String formatGrade(Double grade) {
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (grade == null) {</span>
+<span class="nc" id="L165">            return &quot;&quot;;</span>
+        }
+<span class="nc" id="L167">        return String.valueOf(grade);</span>
+    }
+
+    private Double parseGrade(String value) {
+<span class="pc bpc" id="L171" title="1 of 4 branches missed.">        if (value == null || value.isBlank()) {</span>
+<span class="fc" id="L172">            return null;</span>
+        }
+        try {
+<span class="fc" id="L175">            return Double.parseDouble(value.replace(&quot;,&quot;, &quot;.&quot;));</span>
+<span class="nc" id="L176">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L177">            return null;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

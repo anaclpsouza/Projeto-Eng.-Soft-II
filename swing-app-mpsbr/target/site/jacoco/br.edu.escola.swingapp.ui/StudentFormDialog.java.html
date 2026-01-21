@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentFormDialog.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swing-app-mpsbr</a> &gt; <a href="index.source.html" class="el_package">br.edu.escola.swingapp.ui</a> &gt; <span class="el_source">StudentFormDialog.java</span></div><h1>StudentFormDialog.java</h1><pre class="source lang-java linenums">package br.edu.escola.swingapp.ui;
+
+import br.edu.escola.swingapp.application.StudentUseCase;
+import br.edu.escola.swingapp.domain.model.Student;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
+import java.awt.Frame;
+import java.awt.GridLayout;
+
+public class StudentFormDialog extends JDialog {
+
+    private final StudentUseCase studentUseCase;
+    private final Student editingStudent; // null if it is a new registration
+
+    private JTextField txtRegistration;
+    private JTextField txtName;
+
+    public StudentFormDialog(Frame owner, StudentUseCase studentUseCase, Student editingStudent) {
+<span class="fc" id="L25">        super(owner, true);</span>
+<span class="fc" id="L26">        this.studentUseCase = studentUseCase;</span>
+<span class="fc" id="L27">        this.editingStudent = editingStudent;</span>
+
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        setTitle(editingStudent == null ? &quot;Cadastrar Aluno&quot; : &quot;Editar Aluno&quot;);</span>
+<span class="fc" id="L30">        configureWindow();</span>
+<span class="fc" id="L31">        initializeComponents();</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (editingStudent != null) {</span>
+<span class="fc" id="L33">            loadStudentData();</span>
+        }
+<span class="fc" id="L35">    }</span>
+
+    private void configureWindow() {
+<span class="fc" id="L38">        setSize(400, 200);</span>
+<span class="fc" id="L39">        setLocationRelativeTo(getOwner());</span>
+<span class="fc" id="L40">        setLayout(new BorderLayout());</span>
+<span class="fc" id="L41">    }</span>
+
+    private void initializeComponents() {
+<span class="fc" id="L44">        JPanel fieldsPanel = new JPanel(new GridLayout(2, 2, 8, 8));</span>
+<span class="fc" id="L45">        fieldsPanel.add(new JLabel(&quot;Matrícula:&quot;));</span>
+<span class="fc" id="L46">        txtRegistration = new JTextField();</span>
+<span class="fc" id="L47">        fieldsPanel.add(txtRegistration);</span>
+
+<span class="fc" id="L49">        fieldsPanel.add(new JLabel(&quot;Nome:&quot;));</span>
+<span class="fc" id="L50">        txtName = new JTextField();</span>
+<span class="fc" id="L51">        fieldsPanel.add(txtName);</span>
+
+<span class="fc" id="L53">        add(fieldsPanel, BorderLayout.CENTER);</span>
+
+<span class="fc" id="L55">        JPanel buttonsPanel = new JPanel();</span>
+<span class="fc" id="L56">        JButton btnSave = new JButton(&quot;Salvar&quot;);</span>
+<span class="fc" id="L57">        JButton btnCancel = new JButton(&quot;Cancelar&quot;);</span>
+
+<span class="pc" id="L59">        btnSave.addActionListener(e -&gt; saveStudent());</span>
+<span class="pc" id="L60">        btnCancel.addActionListener(e -&gt; dispose());</span>
+
+<span class="fc" id="L62">        buttonsPanel.add(btnSave);</span>
+<span class="fc" id="L63">        buttonsPanel.add(btnCancel);</span>
+
+<span class="fc" id="L65">        add(buttonsPanel, BorderLayout.SOUTH);</span>
+<span class="fc" id="L66">    }</span>
+
+    private void loadStudentData() {
+<span class="fc" id="L69">        txtRegistration.setText(editingStudent.getRegistration());</span>
+<span class="fc" id="L70">        txtName.setText(editingStudent.getName());</span>
+<span class="fc" id="L71">        txtRegistration.setEditable(false); // do not allow changing registration when editing</span>
+<span class="fc" id="L72">    }</span>
+
+    private void saveStudent() {
+<span class="nc" id="L75">        String registration = txtRegistration.getText().trim();</span>
+<span class="nc" id="L76">        String name = txtName.getText().trim();</span>
+
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        Student student = (editingStudent == null) ? new Student() : editingStudent;</span>
+<span class="nc" id="L79">        student.setRegistration(registration);</span>
+<span class="nc" id="L80">        student.setName(name);</span>
+
+        try {
+            // For simplicity, we use the same use case for create and update.
+
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (editingStudent == null) {</span>
+                // CREATE
+<span class="nc" id="L87">                studentUseCase.registerStudent(student);</span>
+            } else {
+                // UPDATE
+<span class="nc" id="L90">                studentUseCase.updateStudent(student);</span>
+            }
+
+<span class="nc" id="L93">            JOptionPane.showMessageDialog(</span>
+                    this,
+                    &quot;Aluno salvo com sucesso.&quot;,
+                    &quot;Sucesso&quot;,
+                    JOptionPane.INFORMATION_MESSAGE);
+<span class="nc" id="L98">            dispose();</span>
+<span class="nc" id="L99">        } catch (Exception ex) {</span>
+<span class="nc" id="L100">            JOptionPane.showMessageDialog(</span>
+                    this,
+<span class="nc" id="L102">                    &quot;Erro ao salvar aluno:\n&quot; + ex.getMessage(),</span>
+                    &quot;Erro&quot;,
+                    JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L105">        }</span>
+<span class="nc" id="L106">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

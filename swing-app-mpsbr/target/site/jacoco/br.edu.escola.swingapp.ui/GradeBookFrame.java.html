@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GradeBookFrame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swing-app-mpsbr</a> &gt; <a href="index.source.html" class="el_package">br.edu.escola.swingapp.ui</a> &gt; <span class="el_source">GradeBookFrame.java</span></div><h1>GradeBookFrame.java</h1><pre class="source lang-java linenums">package br.edu.escola.swingapp.ui;
+
+import br.edu.escola.swingapp.application.ReportCardUseCase;
+import br.edu.escola.swingapp.application.StudentUseCase;
+import br.edu.escola.swingapp.domain.model.ReportCard;
+import br.edu.escola.swingapp.domain.model.Student;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.util.List;
+
+public class GradeBookFrame extends JFrame {
+
+    private final StudentUseCase studentUseCase;
+    private final ReportCardUseCase reportCardUseCase;
+
+    private JTable table;
+    private DefaultTableModel tableModel;
+
+    public GradeBookFrame(StudentUseCase studentUseCase, ReportCardUseCase reportCardUseCase) {
+<span class="fc" id="L26">        super(&quot;Diário de Classe&quot;);</span>
+<span class="fc" id="L27">        this.studentUseCase = studentUseCase;</span>
+<span class="fc" id="L28">        this.reportCardUseCase = reportCardUseCase;</span>
+
+<span class="fc" id="L30">        configureWindow();</span>
+<span class="fc" id="L31">        initializeTable();</span>
+<span class="fc" id="L32">        loadData();</span>
+<span class="fc" id="L33">    }</span>
+
+    private void configureWindow() {
+<span class="fc" id="L36">        setSize(900, 500);</span>
+<span class="fc" id="L37">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L38">        setLayout(new BorderLayout());</span>
+<span class="fc" id="L39">    }</span>
+
+    private void initializeTable() {
+<span class="fc" id="L42">        tableModel = new DefaultTableModel(</span>
+                new Object[]{
+                        &quot;Matrícula&quot;,
+                        &quot;Nome&quot;,
+                        &quot;Prova 1&quot;,
+                        &quot;Prova 2&quot;,
+                        &quot;Trabalho&quot;,
+                        &quot;Projeto&quot;,
+                        &quot;Média&quot;,
+                        &quot;Situação&quot;
+                },
+                0
+<span class="fc" id="L54">        ) {</span>
+            @Override
+            public boolean isCellEditable(int row, int column) {
+<span class="nc" id="L57">                return false; // diário só para visualização</span>
+            }
+
+            @Override
+            public Class&lt;?&gt; getColumnClass(int columnIndex) {
+<span class="nc bnc" id="L62" title="All 4 branches missed.">                if (columnIndex &gt;= 2 &amp;&amp; columnIndex &lt;= 6) { // colunas de notas + média</span>
+<span class="nc" id="L63">                    return Double.class;</span>
+                }
+<span class="nc" id="L65">                return String.class;</span>
+            }
+        };
+
+<span class="fc" id="L69">        table = new JTable(tableModel);</span>
+<span class="fc" id="L70">        table.setRowHeight(25);</span>
+
+        // Renderer para colorir a coluna de situação
+<span class="fc" id="L73">        DefaultTableCellRenderer statusRenderer = new DefaultTableCellRenderer() {</span>
+            @Override
+            protected void setValue(Object value) {
+<span class="nc" id="L76">                super.setValue(value);</span>
+
+<span class="nc bnc" id="L78" title="All 2 branches missed.">                if (value == null) {</span>
+<span class="nc" id="L79">                    setForeground(Color.BLACK);</span>
+<span class="nc" id="L80">                    return;</span>
+                }
+
+<span class="nc" id="L83">                String status = value.toString();</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">                if (&quot;Aprovado&quot;.equalsIgnoreCase(status)) {</span>
+<span class="nc" id="L85">                    setForeground(new Color(0, 128, 0)); // verde</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">                } else if (&quot;Reprovado&quot;.equalsIgnoreCase(status)) {</span>
+<span class="nc" id="L87">                    setForeground(Color.RED);</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">                } else if (&quot;Recuperação&quot;.equalsIgnoreCase(status)) {</span>
+<span class="nc" id="L89">                    setForeground(new Color(255, 140, 0)); // laranja</span>
+                } else {
+<span class="nc" id="L91">                    setForeground(Color.BLACK);</span>
+                }
+<span class="nc" id="L93">            }</span>
+        };
+
+<span class="fc" id="L96">        table.getColumnModel().getColumn(7).setCellRenderer(statusRenderer);</span>
+
+<span class="fc" id="L98">        JScrollPane scrollPane = new JScrollPane(table);</span>
+<span class="fc" id="L99">        add(scrollPane, BorderLayout.CENTER);</span>
+<span class="fc" id="L100">    }</span>
+
+    private void loadData() {
+<span class="fc" id="L103">        tableModel.setRowCount(0);</span>
+
+<span class="fc" id="L105">        List&lt;Student&gt; students = studentUseCase.listAll();</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        for (Student student : students) {</span>
+<span class="fc" id="L107">            ReportCard reportCard = student.getReportCard();</span>
+<span class="fc" id="L108">            Double exam1 = null;</span>
+<span class="fc" id="L109">            Double exam2 = null;</span>
+<span class="fc" id="L110">            Double assignment = null;</span>
+<span class="fc" id="L111">            Double project = null;</span>
+<span class="fc" id="L112">            Double average = null;</span>
+<span class="fc" id="L113">            String situation = &quot;&quot;;</span>
+
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">            if (reportCard != null) {</span>
+<span class="fc" id="L116">                exam1 = reportCard.getExam1Grade();</span>
+<span class="fc" id="L117">                exam2 = reportCard.getExam2Grade();</span>
+<span class="fc" id="L118">                assignment = reportCard.getAssignmentGrade();</span>
+<span class="fc" id="L119">                project = reportCard.getProjectGrade();</span>
+
+                // Usa o use case para garantir regra única de cálculo
+<span class="fc" id="L122">                average = reportCardUseCase.getAverage(student.getRegistration());</span>
+<span class="fc" id="L123">                situation = reportCardUseCase.getSituation(student.getRegistration());</span>
+            }
+
+<span class="fc" id="L126">            tableModel.addRow(new Object[]{</span>
+<span class="fc" id="L127">                    student.getRegistration(),</span>
+<span class="fc" id="L128">                    student.getName(),</span>
+                    exam1,
+                    exam2,
+                    assignment,
+                    project,
+                    average,
+                    situation
+            });
+<span class="fc" id="L136">        }</span>
+<span class="fc" id="L137">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
