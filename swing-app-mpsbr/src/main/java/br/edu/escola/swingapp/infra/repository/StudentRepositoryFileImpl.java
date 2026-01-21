@@ -2,9 +2,6 @@ package br.edu.escola.swingapp.infra.repository;
 
 import br.edu.escola.swingapp.domain.model.Student;
 import br.edu.escola.swingapp.domain.model.ReportCard;
-import br.edu.escola.swingapp.infra.repository.StudentRepository;
-import br.edu.escola.swingapp.infra.repository.FileStorage;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
