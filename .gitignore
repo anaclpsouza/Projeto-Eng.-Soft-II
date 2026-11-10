@@ -1,0 +1,28 @@
+# Arquivos compilados do Java / Maven
+**/target/
+target/
+*.class
+
+# Logs
+*.log
+
+# Arquivos de IDE / Editores
+.vscode/
+**/.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+.eclipse/
+.metadata/
+*.classpath
+*.project
+*.settings/
+
+# Arquivos do Sistema Operacional
+Thumbs.db
+.DS_Store
+
+# Relatórios do JaCoCo e execuções temporárias
+*.exec
+
