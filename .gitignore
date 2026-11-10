@@ -6,6 +6,12 @@ target/
 # Logs
 *.log
 
+# Arquivos de dados locais
+*.csv
+**/*.csv
+!*.csv.example
+!**/*.csv.example
+
 # Arquivos de IDE / Editores
 .vscode/
 **/.vscode/
@@ -25,4 +31,3 @@ Thumbs.db
 
 # Relatórios do JaCoCo e execuções temporárias
 *.exec
-

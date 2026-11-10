@@ -21,7 +21,7 @@ O projeto adota práticas recomendadas de engenharia de software e processos ali
     - **Recuperação**: $5.0 \le$ Média $< 7.0$
     - **Reprovado**: Média $< 5.0$
 - **Diário de Classe Visual**: Tabela geral exibindo notas de todos os alunos e a situação destacada por cores (verde para Aprovado, laranja para Recuperação e vermelho para Reprovado).
-- **Persistência em Arquivo**: Armazenamento local dos dados em arquivo `CSV` (`students.csv`).
+- **Persistência em Arquivo**: Armazenamento local dos dados em arquivo `CSV` (`students.csv`). Um exemplo de modelo está disponível em `students.csv.example`.
 - **Interface Gráfica Moderna**: Desenvolvida em Java Swing estilizada com a biblioteca **FlatLaf** (Light Theme).
 
 ---
